@@ -4,3 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 object SavedPlacesScreenNavigation
+
+@Serializable
+object AddPlaceScreenNavigation

@@ -55,7 +55,8 @@ dependencies {
   implementation(libs.room.ktx)
   implementation(libs.maps.compose)
   implementation(libs.androidx.material.icons.extended)
-
+  implementation(libs.maps.compose)
+  implementation(libs.playServicesMaps)
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)

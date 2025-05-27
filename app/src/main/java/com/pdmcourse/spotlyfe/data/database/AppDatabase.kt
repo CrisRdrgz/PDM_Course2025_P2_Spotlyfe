@@ -11,7 +11,9 @@ import com.pdmcourse.spotlyfe.data.database.entities.PlaceEntity
   version = 1,
   exportSchema = false
 )
-abstract class AppDatabase: RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
+
+  abstract fun placeDao(): PlaceDao
 
   companion object {
     @Volatile
@@ -34,3 +36,5 @@ abstract class AppDatabase: RoomDatabase() {
     }
   }
 }
+
+

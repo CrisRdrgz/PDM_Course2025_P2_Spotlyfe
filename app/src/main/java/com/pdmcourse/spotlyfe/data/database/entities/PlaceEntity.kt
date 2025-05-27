@@ -2,9 +2,27 @@ package com.pdmcourse.spotlyfe.data.database.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.pdmcourse.spotlyfe.data.model.Place
 
 @Entity(tableName = "places")
-data class PlaceEntity (
-  @PrimaryKey(autoGenerate = true)
-  val id: Int = 0,
+data class PlaceEntity(
+  @PrimaryKey(autoGenerate = true) val id: Int = 0,
+  val name: String,
+  val remark: String,
+  val latitude: Double,
+  val longitude: Double
+)
+
+fun PlaceEntity.toDomain(): Place = Place(
+  name = name,
+  remark = remark,
+  latitude = latitude,
+  longitude = longitude
+)
+
+fun Place.toEntity(): PlaceEntity = PlaceEntity(
+  name = name,
+  remark = remark,
+  latitude = latitude,
+  longitude = longitude
 )

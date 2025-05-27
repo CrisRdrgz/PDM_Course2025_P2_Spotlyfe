@@ -4,37 +4,31 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapType
-import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
-import com.pdmcourse.spotlyfe.data.model.Place
+import com.google.maps.android.compose.*
 import com.pdmcourse.spotlyfe.ui.layout.CustomFloatingButton
 import com.pdmcourse.spotlyfe.ui.layout.CustomTopBar
+import com.pdmcourse.spotlyfe.ui.navigation.AddPlaceScreenNavigation
+import androidx.navigation.NavController
+
 
 @Composable
-fun SavedPlacesScreen() {
-
-  val UCA = Place(
-    name = "Centro Monseñor Romero",
-    remark = "Marker in Centro Monseñor Romero",
-    latitude = 13.679024407659101,
-    longitude = -89.23578718993471,
-  )
+fun SavedPlacesScreen(
+  navController: NavController,
+  viewModel: SavedPlacesViewModel = viewModel(factory = SavedPlacesViewModel.Factory)
+) {
+  val places by viewModel.places.collectAsState()
 
   val cameraPositionState = rememberCameraPositionState {
-    position = CameraPosition.fromLatLngZoom(LatLng(UCA.latitude, UCA.longitude), 16f)
+    position = if (places.isNotEmpty()) {
+      CameraPosition.fromLatLngZoom(LatLng(places[0].latitude, places[0].longitude), 16f)
+    } else {
+      CameraPosition.fromLatLngZoom(LatLng(13.6790, -89.2357), 14f)
+    }
   }
 
   var uiSettings by remember {
@@ -46,21 +40,28 @@ fun SavedPlacesScreen() {
 
   Scaffold(
     topBar = { CustomTopBar() },
-    floatingActionButton = { CustomFloatingButton(onClick = {})}
+    floatingActionButton = {
+      CustomFloatingButton(
+        onClick = {
+          navController.navigate(AddPlaceScreenNavigation)
+        }
+      )
+    }
   ) { innerPadding ->
     Column(modifier = Modifier.padding(innerPadding)) {
-
       GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         properties = properties,
         uiSettings = uiSettings
       ) {
-        Marker(
-          state = MarkerState(position = LatLng(UCA.latitude, UCA.longitude)),
-          title = UCA.name,
-          snippet = UCA.remark
-        )
+        places.forEach { place ->
+          Marker(
+            state = MarkerState(position = LatLng(place.latitude, place.longitude)),
+            title = place.name,
+            snippet = place.remark
+          )
+        }
       }
     }
   }
